@@ -36,7 +36,6 @@ class Body(db.Model):
     title = db.StringProperty(required = True)
     body = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
-
 class MainPage(Handler):
     def render_front(self, title="", body="", error=""):
         self.render("front.html", title = title, body = body, error = error)
@@ -49,15 +48,30 @@ class MainPage(Handler):
         body = self.request.get("body")
 
         if title and body:
-            b = Body(title = title, body = body)
-            b.put()
+            body = Body(title = title, body = body)
+            key = body.put() #changed from just b.put()
 
-            self.redirect("/blog")
+            self.redirect("/blog/body.key.id()") #changed from /newpost
         else:
             error = "We need both a title and a body!"
             self.render_front(title, body, error)
 
+class Blog(Handler):
+    def get(self):
+        bodies = db.GqlQuery("SELECT * FROM Body ORDER BY created DESC LIMIT 5 ")
+        self.render("post.html", bodies = bodies)
+
+class ViewPostHandler(webapp2.RequestHandler):
+    def get(self, id):
+        body = Body.get_by_id(int(id))
+        if body: #Added if statement
+            self.render("post.html", body = body)
+        else:
+            error = "Try again"
+            self.render("post.html")
 
 app = webapp2.WSGIApplication([
-    ('/blog', MainPage)
+    ('/newpost', MainPage),
+    ('/blog', Blog),
+    webapp2.Route('/blog/<id:\d+>', ViewPostHandler)
 ], debug=True)
