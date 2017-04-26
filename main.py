@@ -55,7 +55,6 @@ class MainPage(Handler):
         else:
             error = "We need both a title and a body!"
             self.render_front(title, body, error)
-
 class Blog(Handler):
     def get(self):
         bodies = db.GqlQuery("SELECT * FROM Body ORDER BY created DESC LIMIT 5 ")
