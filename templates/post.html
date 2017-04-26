@@ -6,7 +6,7 @@
 </h1>
 {% for body in bodies %}
     <div class="body">
-        <div class="body-title"><a href={{body.key().id()}}>{{body.title}}</a></div>
+        <div class="body-title"><a href="/blog/{{body.key().id()}}">{{body.title}}</a></div>
         <pre class="body-body">{{body.body}}</pre>
         <div class="error">{{error}}</div>
     </div>

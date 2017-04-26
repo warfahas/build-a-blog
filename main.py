@@ -49,9 +49,9 @@ class MainPage(Handler):
 
         if title and body:
             body = Body(title = title, body = body)
-            key = body.put() #changed from just b.put()
+            body.put() #changed from just key = body.put()
 
-            self.redirect("/blog/body.key.id()") #changed from /newpost
+            self.redirect("/blog/{0}".format(body.key().id())) #changed from /newpost
         else:
             error = "We need both a title and a body!"
             self.render_front(title, body, error)
@@ -62,13 +62,32 @@ class Blog(Handler):
         self.render("post.html", bodies = bodies)
 
 class ViewPostHandler(webapp2.RequestHandler):
+
     def get(self, id):
         body = Body.get_by_id(int(id))
-        if body: #Added if statement
-            self.render("post.html", body = body)
+        if body:
+            t = jinja_env.get_template("singlepost.html")
+            content = t.render(body = body)
+            self.response.write(content)
         else:
             error = "Try again"
-            self.render("post.html")
+            t = jinja_env.get_template("singlepost.html")
+            content = t.render(error = error)
+            self.response.write(content)
+
+
+
+
+
+
+
+
+
+        #if body:
+        #    self.response.out.write("singlepost.html")
+        #else:
+        #    error = "Try again"
+        #    self.render("post.html")
 
 app = webapp2.WSGIApplication([
     ('/newpost', MainPage),
