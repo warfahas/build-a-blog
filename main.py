@@ -69,8 +69,8 @@ class ViewPostHandler(webapp2.RequestHandler):
             content = t.render(body = body)
             self.response.write(content)
         else:
-            error = "Try again"
-            t = jinja_env.get_template("singlepost.html")
+            error = "there is no post with id {0}".format(id)
+            t = jinja_env.get_template("errorbuildablog.html")
             content = t.render(error = error)
             self.response.write(content)
 
